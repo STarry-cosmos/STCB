@@ -1,0 +1,327 @@
+/* STCB 桥接 — 样式
+   尽量沿用酒馆主题变量，保证跟随主题配色 */
+
+.stcb-gen-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--SmartThemeBorderColor, var(--SmartThemeQuoteColor, #888));
+    background-color: var(--SmartThemeBlurTintColor, rgba(128, 128, 128, 0.15));
+    color: var(--SmartThemeBodyColor, inherit);
+    font-size: 0.95em;
+    line-height: 1.4;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.stcb-gen-button:hover {
+    opacity: 0.85;
+    border-color: var(--SmartThemeQuoteColor, #aaa);
+}
+
+.stcb-gen-button:active {
+    transform: translateY(1px);
+}
+
+.stcb-gen-button .stcb-btn-icon {
+    opacity: 0.85;
+}
+
+/* 生成中 */
+.stcb-gen-button.stcb-busy {
+    cursor: progress;
+    opacity: 0.7;
+}
+
+.stcb-gen-button.stcb-busy .stcb-btn-icon {
+    animation: stcb-spin 1.1s linear infinite;
+}
+
+@keyframes stcb-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 排队中：还能点（点了是取消），所以不做成"禁用"的样子 */
+.stcb-gen-button.stcb-queued {
+    cursor: pointer;
+    opacity: 0.85;
+    border-style: dashed;
+}
+
+.stcb-gen-button.stcb-queued:hover {
+    opacity: 1;
+}
+
+.stcb-gen-button.stcb-queued .stcb-btn-icon {
+    animation: stcb-spin 1.8s linear infinite;
+}
+
+/* 成功 */
+.stcb-gen-button.stcb-done {
+    border-color: #3fa96a;
+}
+
+.stcb-gen-button.stcb-done .stcb-btn-icon {
+    color: #3fa96a;
+}
+
+/* 失败 */
+.stcb-gen-button.stcb-error {
+    border-color: #c9524f;
+}
+
+.stcb-gen-button.stcb-error .stcb-btn-icon {
+    color: #c9524f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stcb-gen-button.stcb-busy .stcb-btn-icon {
+        animation: none;
+    }
+}
+
+/* ---------------- 图片显示（private 模式） ---------------- */
+
+/* 插槽：按钮 + 它的图片容器，让图片能跟着按钮走 */
+.stcb-slot {
+    display: inline-block;
+    vertical-align: top;
+    max-width: 100%;
+}
+
+.stcb-media {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* 空容器不占位，免得没图的时候还留一段空隙 */
+.stcb-media:empty {
+    display: none;
+}
+
+/* 放在消息末尾时占满一行 */
+.stcb-media-bottom {
+    width: 100%;
+}
+
+/* 放在插槽里时按内容宽度收缩 */
+.stcb-media-slot {
+    margin-top: 6px;
+    max-width: min(100%, 760px);
+}
+
+.stcb-media-img {
+    display: block;
+    /* 给一个最小尺寸，避免图片还没解码时塌成 0×0 看不见 */
+    min-width: 64px;
+    min-height: 64px;
+    max-width: 240px;
+    max-height: 240px;
+    border-radius: 6px;
+    border: 1px solid var(--SmartThemeBorderColor, rgba(128, 128, 128, 0.3));
+    background-color: var(--SmartThemeBlurTintColor, rgba(128, 128, 128, 0.15));
+    cursor: zoom-in;
+    object-fit: cover;
+    transition: opacity 0.15s ease;
+}
+
+.stcb-media-img:hover {
+    opacity: 0.85;
+}
+
+.stcb-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.85);
+    cursor: zoom-out;
+}
+
+.stcb-lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 8px;
+    cursor: default;
+}
+
+.stcb-lightbox-count {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 13px;
+    opacity: 0.8;
+    user-select: none;
+}
+
+/* ---------------- 画廊导航条 ---------------- */
+
+.stcb-gallery-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.stcb-nav {
+    min-width: 26px;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 6px;
+    border: 1px solid var(--SmartThemeBorderColor, rgba(128, 128, 128, 0.3));
+    background-color: var(--SmartThemeBlurTintColor, rgba(128, 128, 128, 0.15));
+    color: var(--SmartThemeBodyColor, inherit);
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+}
+
+.stcb-nav:hover {
+    opacity: 0.8;
+}
+
+.stcb-count {
+    opacity: 0.7;
+    min-width: 34px;
+    text-align: center;
+    user-select: none;
+}
+
+.stcb-hide-btn {
+    font-size: 12px;
+}
+
+.stcb-show-btn {
+    margin-top: 6px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px dashed var(--SmartThemeBorderColor, rgba(128, 128, 128, 0.4));
+    background-color: transparent;
+    color: var(--SmartThemeBodyColor, inherit);
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.75;
+}
+
+.stcb-show-btn:hover {
+    opacity: 1;
+}
+
+/* 全屏里的左右切换按钮 */
+.stcb-lightbox .stcb-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 72px;
+    font-size: 26px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    border-radius: 8px;
+}
+
+.stcb-lightbox .stcb-lightbox-prev {
+    left: 16px;
+}
+
+.stcb-lightbox .stcb-lightbox-next {
+    right: 16px;
+}
+
+/* ---------------- 设置面板 ---------------- */
+
+.stcb-settings .stcb-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.stcb-settings .stcb-row-inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+/*
+ * 按钮不要被 flex 压扁。
+ * 不锁住的话，中文会在窄宽度下逐字换行，变成竖排。
+ */
+.stcb-settings .stcb-row-inline > .menu_button {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+}
+
+/* 状态文字占剩下的空间，并且允许在窄屏下换行 */
+.stcb-settings .stcb-row-inline > .stcb-status {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.stcb-settings .stcb-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stcb-settings .stcb-tag-row .text_pole {
+    flex: 1;
+    min-width: 0;
+}
+
+.stcb-settings .stcb-tag-sep {
+    opacity: 0.6;
+}
+
+.stcb-settings .stcb-hint {
+    opacity: 0.7;
+    font-size: 0.85em;
+    line-height: 1.5;
+}
+
+.stcb-settings .stcb-hint code {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: var(--SmartThemeBlurTintColor, rgba(128, 128, 128, 0.15));
+}
+
+.stcb-settings .stcb-sep {
+    opacity: 0.25;
+    margin: 12px 0;
+}
+
+.stcb-status {
+    font-size: 0.9em;
+    opacity: 0.85;
+}
+
+.stcb-status[data-kind="ok"] {
+    color: #3fa96a;
+}
+
+.stcb-status[data-kind="warn"] {
+    color: #d09a3c;
+}
+
+.stcb-status[data-kind="err"] {
+    color: #c9524f;
+}

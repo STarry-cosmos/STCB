@@ -1,0 +1,141 @@
+<div class="stcb-settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>STCB 桥接 (ComfyUI)</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+
+            <div class="stcb-row">
+                <label for="stcb_bridge_url">桥接服务地址</label>
+                <input id="stcb_bridge_url" type="text" class="text_pole" placeholder="http://127.0.0.1:8765" />
+            </div>
+
+            <div class="stcb-row stcb-row-inline">
+                <button id="stcb_check_btn" class="menu_button">检查连接</button>
+                <span id="stcb_status_text" class="stcb-status">未检查</span>
+            </div>
+
+            <div class="stcb-row">
+                <label>触发标记（与 st-chatu8 一致）</label>
+                <div class="stcb-tag-row">
+                    <input id="stcb_start_tag" type="text" class="text_pole" placeholder="image###" />
+                    <span class="stcb-tag-sep">…</span>
+                    <input id="stcb_end_tag" type="text" class="text_pole" placeholder="###" />
+                </div>
+                <small class="stcb-hint">
+                    这两个标记之间的内容会被当作提示词。<br />
+                    例如 <code>image###1girl, solo###</code> 会变成一个生成按钮。
+                </small>
+            </div>
+
+            <div class="stcb-row">
+                <label for="stcb_code_langs">备选：触发用的代码块语言</label>
+                <input id="stcb_code_langs" type="text" class="text_pole" placeholder="comfy, stcb" />
+                <small class="stcb-hint">
+                    用这些语言标记的代码块也会变成生成按钮。多个用逗号分隔，留空则关闭。
+                </small>
+            </div>
+
+            <div class="stcb-row">
+                <label class="checkbox_label" for="stcb_confirm">
+                    <input id="stcb_confirm" type="checkbox" />
+                    <span>发送前先弹出编辑框确认提示词</span>
+                </label>
+            </div>
+
+            <div class="stcb-row">
+                <label for="stcb_max_queue">同时最多几个任务</label>
+                <input id="stcb_max_queue" type="number" min="0" max="50" step="1" class="text_pole" />
+                <small class="stcb-hint">
+                    点按钮会立刻提交进 <strong>ComfyUI 自己的队列</strong>，按点的顺序依次执行。<br />
+                    这里限制同时能有多少个任务在排队/生成，防止手滑点太多。填 <code>0</code> 表示不限制。<br />
+                    排队中的按钮显示「排队中 · 点击取消」，再点一次就能从队列里撤掉；
+                    <strong>已经开始生成的不能取消</strong>。
+                </small>
+            </div>
+
+            <div class="stcb-row">
+                <label for="stcb_attach_mode">图片存储方式</label>
+                <select id="stcb_attach_mode" class="text_pole">
+                    <option value="private">私有（推荐）— 图片不会发给 AI</option>
+                    <option value="native">酒馆原生媒体 — 有画廊/滑动/全屏，但会发给视觉模型</option>
+                </select>
+                <small class="stcb-hint">
+                    私有模式把图片存在消息的自定义字段里，酒馆不认识它，
+                    因此不会被当成 <code>image_url</code> 内联进提示词。<br />
+                    一张 1024×1024 的图大约要 1000+ token，而且让角色"看到"自己刚生成的插图
+                    往往会把对话带偏 —— 除非你确实想要这个效果，否则保持私有。
+                </small>
+            </div>
+
+            <div class="stcb-row">
+                <label for="stcb_media_position">图片显示位置</label>
+                <select id="stcb_media_position" class="text_pole">
+                    <option value="inline">紧跟按钮 — 标记在哪，图就出现在哪</option>
+                    <option value="bottom">消息末尾</option>
+                </select>
+                <small class="stcb-hint">
+                    「紧跟按钮」会在标记所在的位置显示图片；
+                    「消息末尾」是 st-chatu8 的默认行为。
+                </small>
+            </div>
+
+            <div class="stcb-row">
+                <label>孤立图片</label>
+                <div class="stcb-row-inline">
+                    <button id="stcb_cleanup_btn" class="menu_button">清理孤立图片</button>
+                    <span id="stcb_cleanup_text" class="stcb-status"></span>
+                </div>
+                <small class="stcb-hint">
+                    提示词被改过之后，旧图片就找不到自己的按钮了，会自动隐藏。
+                    点上面的按钮把它们从聊天记录里彻底删掉。<br />
+                    只清理聊天记录里的引用，<strong>磁盘上的图片文件不会被删</strong>。
+                </small>
+            </div>
+
+            <div class="stcb-row">
+                <label>标记换行修复</label>
+                <div class="stcb-row-inline">
+                    <button id="stcb_flatten_btn" class="menu_button">修复历史消息</button>
+                    <span id="stcb_flatten_text" class="stcb-status"></span>
+                </div>
+                <small class="stcb-hint">
+                    AI 常把结束标记写在行首，而 Markdown 会把行首的 <code>###</code> 当成三级标题吃掉，
+                    导致标记失效、按钮出不来。<br />
+                    扩展在收到新消息时会自动处理；这个按钮用来修复**之前已经存下来**的消息。
+                </small>
+            </div>
+
+            <div class="stcb-row">
+                <label>旧图片迁移</label>
+                <div class="stcb-row-inline">
+                    <button id="stcb_migrate_btn" class="menu_button">迁移到酒馆</button>
+                    <span id="stcb_migrate_text" class="stcb-status"></span>
+                </div>
+                <small class="stcb-hint">
+                    早期生成的图片有两种旧存法：base64 <strong>内联</strong>在聊天记录里
+                    （聊天文件会很大、在新窗口打开也卡），或者由桥接服务托管
+                    （关掉服务就看不到）。<br />
+                    这个按钮把它们统一迁到<strong>酒馆自己的图片目录</strong>，
+                    之后看图不再依赖桥接服务，备份也跟着酒馆走。<br />
+                    <strong>注意</strong>：如果里面有桥接服务托管的图，
+                    迁移时要先把桥接服务开起来才能取回原图。
+                </small>
+            </div>
+
+            <hr class="stcb-sep" />
+
+            <div class="stcb-row">
+                <label>用法</label>
+                <small class="stcb-hint">
+                    引导 AI 在回复里输出被标记包裹的英文绘画标签：<br />
+                    <code>image###sfw, 1girl, from front, amber eyes, snowy mountain ###</code><br />
+                    该内容会自动变成一个「生成图片」按钮。<br />
+                    从 st-chatu8 迁移过来的角色卡不用改，标记一致即可直接生效。
+                </small>
+            </div>
+
+        </div>
+    </div>
+</div>
